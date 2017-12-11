@@ -38,6 +38,7 @@ All credits to RodG for creating and publishing this plugin in the Zen Cart foru
 
 Version history
 ----------------------
+1.2.2  2017-12-12 DrByte - Updated code for PHP7 compatibility
 
 1.2.1
 2017-12-11 webchills
