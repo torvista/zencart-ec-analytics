@@ -37,6 +37,11 @@ All credits to RodG for creating and publishing this plugin in the Zen Cart foru
 Version history
 ----------------------
 
+1.2.1
+2017-12-11 webchills
+Fix typo preventing the brand name to be recorded see:
+https://www.zen-cart.com/showthread.php?217086-Google-Ecommerce-Tracking&p=1339193#post1339193
+
 1.2.0
 2017-05-18 webchills
 Fixes suggested in the following thread integrated:

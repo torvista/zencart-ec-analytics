@@ -5,7 +5,7 @@
  * @copyright Copyright 2003-2017 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: class.ec_analytics.php 2017-05-18 15:47:36Z webchills $
+ * @version $Id: class.ec_analytics.php 2017-12-11 18:22:36Z webchills $
  */
 class ec_analytics extends base {
 
@@ -214,7 +214,7 @@ class ec_analytics extends base {
                 while (!$items_in_cart->EOF) {
                     $variant = $db->Execute("SELECT products_options_values FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " WHERE orders_products_id = " . (string)$items_in_cart->fields['orders_products_id']);
                         $varTxt = ($variant->fields['products_options_values'] != "") ? $variant->fields['products_options_values']:"n/a";
-                    $brand = zen_get_products_manufacturers_name($items_in_cart->fields['orders_products_id']); 
+                    $brand = zen_get_products_manufacturers_name($items_in_cart->fields['products_id']); 
                          $brandTxt = ($brand != "") ? $brand:"n/a";
                     
                     $analytics['addProductItemsStr'] .= "ga('ec:addProduct',"
