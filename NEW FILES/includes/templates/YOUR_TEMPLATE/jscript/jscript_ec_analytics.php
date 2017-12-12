@@ -27,7 +27,7 @@ if ((!defined('GOOGLE_UA') || GOOGLE_UA === "UA-XXXXXXXX-X")) {
     })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
 <?php
-global $analytics, $cID; 
+//global $analytics, $cID;
 $cID = (isset($_SESSION['customer_id'])) ? "customerID#".$_SESSION['customer_id']:"guest";
 echo ($cID === "guest") ? "ga('create', '".$trackingID."', 'auto') ;\n":"ga('create', '".$trackingID."', {'userId':'{$cID}'});\n";   
 echo "ga('require', 'ec');\n"; 

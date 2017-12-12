@@ -5,11 +5,11 @@
  * @copyright Copyright 2003-2017 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: class.ec_analytics.php 2017-12-11 18:22:36Z webchills $
+ * @version $Id: class.ec_analytics.php 2017-12-11  DrByte $
  */
 class ec_analytics extends base {
 
-    function ec_analytics() {
+    function __construct() {
         global $zco_notifier;
         $zco_notifier->attach($this, array('NOTIFY_HEADER_TIMEOUT'));
 
@@ -48,8 +48,8 @@ class ec_analytics extends base {
                 } else {  $id = explode(":", $_REQUEST['product_id']);  }
             }
         }
-        $id = intval($id[0]);
-        if ($id == 0)  $id = "";
+        $id = (int)$id[0];
+        if ($id === 0) $id = "";
    return $id;
     }
 
@@ -57,10 +57,11 @@ class ec_analytics extends base {
  function getCatString($id) {
   global $db, $cPath ;
   $masterCat = zen_get_categories_name_from_product($id) ;
+  $catTxt = '';
      $i = 0 ; $flag = 0 ;
         if(isset($cPath)) {
-            $p = split("_",$cPath) ; 
-            while ($i < sizeof($p)) {
+            $p = explode('_',$cPath) ;
+            while ($i < count($p)) {
                 $the_categories_name= $db->Execute("select categories_name from " . TABLE_CATEGORIES_DESCRIPTION . " where categories_id= '" . $p[$i] . "' and language_id= '" . $_SESSION['languages_id'] . "'");
                 if ($masterCat ==  $the_categories_name->fields['categories_name'])  {$flag = 1 ;}
                      
@@ -80,7 +81,7 @@ class ec_analytics extends base {
                      if(is_array($item['attributes']))  $varTxt = zen_values_name($item['attributes'][1]);                     
                      if(!$varTxt) $varTxt = "n/a"; 
                      
-                     $itemID = split(":", $item['id'] ) ; 
+                     $itemID = explode(":", $item['id'] ) ;
 
                      $brand = zen_get_products_manufacturers_name($itemID[0]) ; 
                          $brandTxt = ($brand != "") ? $brand:"n/a";
@@ -121,14 +122,14 @@ class ec_analytics extends base {
                  $varTxt = "n/a";  $qty = '';
                 if ($notifier == 'NOTIFIER_CART_ADD_CART_END') {
                     $analytics['action'] = "Add to Cart";
-                    if (isset($_REQUEST['cart_quantity'])) $qty = intval($_REQUEST['cart_quantity']);
+                    if (isset($_REQUEST['cart_quantity'])) $qty = (int)$_REQUEST['cart_quantity'];  // @TODO does this need to handle decimals?
                          if (!$qty)  $qty = 1;                     
                         $products = $_SESSION['cart']->get_products(); 
                             if(is_array($products)) { 
                                 foreach ($products as $item) { 
                                     if(is_array($item['attributes'])) {
-                                        $itemID = split(":", $item['id'] ) ; 
-                                        $requestID = split(":", (string)$_REQUEST['products_id'] ) ; 
+                                        $itemID = explode(":", $item['id'] ) ;
+                                        $requestID = explode(":", (string)$_REQUEST['products_id'] ) ;
                                         if ($requestID[0] === $itemID[0]) {
                                             $varTxt = zen_values_name($item['attributes'][1]);
                                         }      
@@ -146,7 +147,7 @@ class ec_analytics extends base {
                 }
                 break;
 
-  /////////////   Chckout steps ////////////////////////////              
+  /////////////   Checkout steps ////////////////////////////
             case 'NOTIFY_HEADER_START_LOGIN':         //  Checkout Step 1
                 $analytics['action'] = "Start Login";
                 $analytics['addProductItemsStr'] = $this->addProductItemsStr() ;
@@ -201,9 +202,14 @@ class ec_analytics extends base {
     
                 
                 
-                $coupon = (isset($order_summary['coupon_code'])) ? $order_summary['coupon_code'] : "n/a";
-                $analytics['transaction'] = array('id' => (string) $order_summary['order_number'], 'affiliation' => $affiliation,
-                'revenue'  => number_format($order_summary['order_total'],2,'.',''), 'shipping'  => number_format($order_summary['shipping'],2,'.',''), 'tax' =>  number_format($order_summary['tax'],2,'.',''), 'coupon' =>  $coupon);
+                $coupon = isset($order_summary['coupon_code']) ? $order_summary['coupon_code'] : "n/a";
+                $analytics['transaction'] = array('id' => (string) $order_summary['order_number'],
+                                                  'affiliation' => $affiliation,
+                                                  'revenue'  => number_format($order_summary['order_total'],2,'.',''),
+                                                  'shipping'  => number_format($order_summary['shipping'],2,'.',''),
+                                                  'tax' =>  number_format($order_summary['tax'],2,'.',''),
+                                                  'coupon' =>  $coupon,
+                                                );
 
                 $items_query = "SELECT DISTINCT orders_products_id, products_id, products_name, products_model, final_price, products_tax, products_quantity
                      FROM " . TABLE_ORDERS_PRODUCTS . " WHERE orders_id = :ordersID ORDER BY products_name";
@@ -238,7 +244,7 @@ class ec_analytics extends base {
             default:   
                 $notifyArr = explode("_", $notifier, 2);
                 $analytics['action'] = ucwords(strtolower(str_replace("_", " ", $notifyArr[1])));
-}
-$_SESSION['analytics'] = $analytics;
+        }
+        $_SESSION['analytics'] = $analytics;
     }
 }
