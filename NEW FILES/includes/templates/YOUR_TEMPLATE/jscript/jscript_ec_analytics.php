@@ -5,7 +5,7 @@
  * @copyright Copyright 2003-2017 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart-pro.at/license/2_0.txt GNU Public License V2.0
- * @version $Id: jscript_ec_analytics.php 2017-05-18 15:47:36Z webchills $
+ * @version $Id: jscript_ec_analytics.php 2017-12-22 20:47:36Z DrByte $
  */
 
 if ((!defined('GOOGLE_UA') || GOOGLE_UA === "UA-XXXXXXXX-X")) { 
